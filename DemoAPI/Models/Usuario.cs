@@ -8,14 +8,6 @@ namespace DemoAPI.Models
     [Serializable()]
     public class Usuario
     {
-        //public virtual string Contrasenia { get; set; }
-        //public virtual string Correo { get; set; }
-        //public virtual string Estatus { get; set; }
-        //public virtual DateTime FechaAlta { get; set; }
-        //public virtual string Nombre { get; set; }
-        //public virtual string UsuarioAcceso { get; set; }
-        //public virtual int UsuarioID { get; set; }
-        //public virtual int UsuarioAlta { get; set; }
         public virtual int ID { get; set; }
         public virtual string Correo { get; set; }
         public virtual string Nombre { get; set; }

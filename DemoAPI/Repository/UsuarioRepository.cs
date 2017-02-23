@@ -1,11 +1,12 @@
-﻿using Eupa.net.Core.Clases;
+﻿using DemoAPI.Models;
+using Eupa.net.Core.Clases;
 using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace DemoAPI.Models.Repository
+namespace DemoAPI.Repository
 {
     public class UsuarioRepository : RepositoryBase<Usuario>
     {
@@ -21,8 +22,9 @@ namespace DemoAPI.Models.Repository
             _errores = new List<string>();
             try
             {
-                var user = _session.Query<Usuario>().FirstOrDefault(a => a.Nombre.ToLower() == usuario.ToLower() && a.Password.Equals(contrasenia));
+                var user = _session.Query<Usuario>().FirstOrDefault(a => a.Correo.ToLower() == usuario.ToLower() && a.Password.Equals(contrasenia));
                 if (user == null) _mensajes.Add("El usuario y/o contraseña es incorrecto");
+                else _exito = true;
             }
             catch (Exception ex)
             {
