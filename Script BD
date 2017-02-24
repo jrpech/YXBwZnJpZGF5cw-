@@ -1,0 +1,27 @@
+CREATE TABLE Usuario(
+	ID int not null identity(1,1),
+	Correo varchar(255) not null,
+	Nombre varchar(255) not null,
+	Password varchar(255) not null,
+	FechaNacimiento datetime not null default getdate(),
+	TotalVisitas int not null default 0,
+	VisitasActuales int not null default 0,
+	FechaRegistro datetime not null default getdate(),
+	TipoLogin varchar(255) not null,
+	UltimoInicio datetime not null default getdate(),
+	MembresiaActual int not null default 0,
+	Tipo varchar(255) not null,
+	Codigo varchar(255) not null,
+	primary key(ID)
+)
+
+
+CREATE TABLE TipoMembresia(
+	ID int not null identity(1,1),
+	Nombre varchar(255) not null,
+	NumeroDeVisiatas int not null default 0,
+	PorcientoDescuento decimal(10,2),
+	Color varchar(255) not null,
+	Estado varchar(255) not null,
+	primary key(ID)
+)
