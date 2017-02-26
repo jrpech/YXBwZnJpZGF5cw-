@@ -1,6 +1,8 @@
 ﻿using DemoAPI.Models;
 using DemoAPI.Repository;
+using DemoAPI.Rules;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,25 +79,60 @@ namespace DemoAPI.Controllers
         }
 
         [Route("acceso/usuario")]
-        public IHttpActionResult GuardarUsuario(Usuario oUsuario)
+        public IHttpActionResult GuardarUsuario(object val)
         {
+            Usuario oUsuario = null;
+            if (val.GetType() == typeof(Usuario)) oUsuario = (Usuario)val;
+            else if (val.GetType() == typeof(JObject))
+            {
+                JObject a = (JObject)val;
+                var algo = a.Root.GetType();
+                oUsuario = a.ToObject<Usuario>();
+            }
+
+            if (oUsuario == null) oUsuario = new Usuario();
+            if (oUsuario.ID == 0) oUsuario.FechaRegistro = DateTime.Now;
+            oUsuario.UltimoInicio = DateTime.Now;
+
+            UsuarioVR vrUsaurio = new UsuarioVR();
+            if (!vrUsaurio.Insertar(oUsuario))
+            {
+                return Json(new { StatusCode = "error", ResponseMessage = Funciones.FormatoMensajes(vrUsaurio.Mensajes) });
+            }
+            rUsuario._session.Clear();
             if (!rUsuario.Save(oUsuario))
             {
                 return Json(new { StatusCode = "error", ResponseMessage = Funciones.FormatoMensajes(rUsuario.Mensajes) });
             }
-
+            rUsuario._session.Flush();
             return Ok(oUsuario);
         }
 
         [HttpPost]
-        [Route("acceso/membresia/{oTipoMembresia}")]
-        public IHttpActionResult GuardarMembresia(TipoMembresia oTipoMembresia)
+        [Route("acceso/membresia")]
+        public IHttpActionResult GuardarMembresia(object val)
         {
-            if (!rMembresia.Save(oTipoMembresia))
+            TipoMembresia oTipoMembresia = null;
+            if (val.GetType() == typeof(TipoMembresia)) oTipoMembresia = (TipoMembresia)val;
+            else if (val.GetType() == typeof(JObject))
             {
-                return Json(new { StatusCode = "error", ResponseMessage = Funciones.FormatoMensajes(rUsuario.Mensajes) });
+                JObject a = (JObject)val;
+                var algo = a.Root.GetType();
+                oTipoMembresia = a.ToObject<TipoMembresia>();
             }
 
+            TipoMembresiaVR vrTipoMembresia = new TipoMembresiaVR();
+            if (!vrTipoMembresia.Insertar(oTipoMembresia))
+            {
+                return Json(new { StatusCode = "error", ResponseMessage = Funciones.FormatoMensajes(vrTipoMembresia.Mensajes) });
+            }
+
+            rMembresia._session.Clear();
+            if (!rMembresia.Save(oTipoMembresia))
+            {
+                return Json(new { StatusCode = "error", ResponseMessage = Funciones.FormatoMensajes(rMembresia.Mensajes) });
+            }
+            rMembresia._session.Flush();
             return Ok(oTipoMembresia);
         }
     }

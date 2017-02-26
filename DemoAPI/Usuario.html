@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Usuario</title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="Content/bootstrap-theme.css" rel="stylesheet" />
+</head>
+<body>
+    <form id="frmUsuario">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Estatus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5"><p class="h4 text-center">&#33;No existe informaci&oacute;n para mostrar!</p></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label for="txtNombre">Nombre</label>
+                <input type="text" name="txtNombre" id="txtNombre" class="form-control input-sm" />
+            </div>
+            <div class="col-sm-3">
+                <label for="txtFechaNac">Fecha Nacimiento</label>
+                <input type="text" name="txtFechaNac" id="txtFechaNac" class="form-control input-sm" />
+            </div>
+            <div class="col-sm-3">
+                <label for="txtCorreo">Correo</label>
+                <input type="text" name="txtCorreo" id="txtCorreo" class="form-control input-sm" />
+            </div>
+            <div class="col-sm-3">
+                <label for="txtPass">Contraseña</label>
+                <input type="text" name="txtPass" id="txtPass" class="form-control input-sm" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1">
+                <input type="button" id="btnGuardar" value="Guardar" class="btn btn-sm btn-block btn-primary" />
+            </div>
+        </div>
+    </form>
+    <script src="Scripts/jquery-3.1.1.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function ($) {
+            var uri = "http://localhost:62066/acceso/"
+            //GetUsuarios();
+            function GetUsuarios() {
+                $.getJSON(uri + "usuarios").done(function (data) {
+                    var body = $("table tbody");
+                    body.html("");
+                    return;
+                    if (data.lenght == 0) {
+                        body.html('<tr><td colspan="5"><p class="h4 text-center">&#33;No existe informaci&oacute;n para mostrar!</p></td></tr>');
+                        return;
+                    }
+                    var tabla = "";
+                    // On success, 'data' contains a list of products.
+                    var Array_JSON = JSON.parse(response);
+                    $.each(Array_JSON, function (key, item) {
+                        // Add a list item for the product.
+                        tabla += '<tr>'
+                        tabla += '<td>' + item.UsuarioAcceso + '</td>'
+                        tabla += '<td>' + item.Nombre + '</td>'
+                        tabla += '<td>' + item.Correo + '</td>'
+                        tabla += '<td>' + item.Estatus + '</td>'
+                        tabla += '</tr>'
+                    });
+                    body.html(tabla);
+                });
+            }
+
+            $(document).on("click", "#btnGuardar", function (e) {
+                //CreateUser();
+                CreateMembresia();
+            });
+
+            window.CreateMembresia = function () {
+                var memb = {
+                    ID: 0, Nombre: $('#txtNombre').val(), NumeroDeVisiatas: $('#txtFechaNac').val(), PorcientoDescuento: 0, Color: $('#txtCorreo').val(),
+                    Estado: $('#txtPass').val()
+                };
+
+                var membresia = JSON.stringify(memb);
+
+                var url = 'acceso/membresia';
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: membresia,
+                    contentType: "application/json;chartset=utf-8",
+                    success: function (data) {
+                        console.log(data);
+                        alert(data);
+                    },
+                    error: function (error) {
+                        alert(error);
+                    }
+                });
+            }
+
+            window.CreateUser = function () {
+                var usuario = {
+                    ID: 1002, Correo: $('#txtCorreo').val(), Nombre: $('#txtNombre').val(), Password: $('#txtPass').val(), FechaNacimiento: $('#txtFechaNac').val(),
+                    TotalVisitas: 0, VisitasActuales: 0, FechaRegistro: new Date(), TipoLogin: "demo", UltimoInicio: new Date(), MembresiaActual: 0, Tipo: "uno", Codigo: "001"
+                };
+
+                var user = JSON.stringify(usuario);
+
+                var url = 'acceso/usuario';
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: user,
+                    contentType: "application/json;chartset=utf-8",
+                    success: function (data) {
+                        console.log(data);
+                        alert(data);
+                    },
+                    error: function (error) {
+                        alert(error);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
